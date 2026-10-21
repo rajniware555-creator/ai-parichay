@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artificial Intelligence — एक पूरा परिचय</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi:ital@0;1&family=Mukta:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6f0;
+    --bg-2:#f3ece2;
+    --surface:#fffdf9;
+    --surface-2:#fbf6ee;
+    --ink:#241f19;
+    --text:#3b342b;
+    --text-dim:#7c7364;
+    --border:rgba(36,31,25,0.13);
+    --border-strong:rgba(36,31,25,0.22);
+    --terracotta:#c2410c;
+    --terracotta-dim:#f7e6dc;
+    --sage:#4f7a2a;
+    --sage-dim:#e8f0dc;
+    --amber:#b06a05;
+    --amber-dim:#f9ecd4;
+    --deep:#1e2a38;
+    --deep-dim:#e3e8ee;
+    --font-display:'Tiro Devanagari Hindi', Georgia, serif;
+    --font-body:'Mukta', -apple-system, 'Segoe UI', sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, monospace;
+    --radius:16px;
+    --shadow-sm:0 1px 2px rgba(36,31,25,0.05), 0 2px 8px rgba(36,31,25,0.04);
+    --shadow-md:0 4px 12px rgba(36,31,25,0.07), 0 12px 32px rgba(36,31,25,0.06);
+    --maxw:1120px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html{scroll-behavior:smooth}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    font-weight:400;
+    line-height:1.75;
+    font-size:17px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    background-image:
+      radial-gradient(900px 500px at 78% -8%, rgba(194,65,12,0.07), transparent 60%),
+      radial-gradient(760px 460px at 6% 4%, rgba(79,122,42,0.07), transparent 62%),
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:auto,auto,56px 56px,56px 56px;
+    background-position:0 0,0 0,-1px -1px,-1px -1px;
+    background-attachment:fixed;
+  }
+
+  ::selection{background:var(--terracotta);color:#fff}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+  /* ---------- Nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,246,240,0.82);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    max-width:var(--maxw);margin:0 auto;padding:12px 24px;
+    display:flex;align-items:center;gap:22px;
+  }
+  .brand{
+    font-family:var(--font-mono);font-weight:600;font-size:14px;
+    letter-spacing:0.02em;color:var(--ink);white-space:nowrap;
+    display:flex;align-items:center;gap:9px;
+  }
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--terracotta);flex:none}
+  .nav-links{
+    display:flex;gap:4px;margin-left:auto;overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links a{
+    font-family:var(--font-mono);font-size:12.5px;color:var(--text-dim);
+    text-decoration:none;padding:7px 11px;border-radius:8px;white-space:nowrap;
+    transition:background .18s, color .18s;
+  }
+  .nav-links a:hover{background:var(--terracotta-dim);color:var(--terracotta)}
+
+  /* ---------- Hero ---------- */
+  header.hero{padding:80px 0 56px;position:relative}
+  .eyebrow{
+    font-family:var(--font-mono);font-size:12.5px;letter-spacing:0.16em;
+    text-transform:uppercase;color:var(--terracotta);font-weight:500;
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";width:34px;height:1.5px;background:var(--terracotta);display:inline-block}
+  h1{
+    font-family:var(--font-display);font-weight:400;
+    font-size:clamp(2.3rem,6vw,4.1rem);line-height:1.12;
+    color:var(--ink);letter-spacing:-0.01em;max-width:16ch;
+  }
+  h1 em{font-style:italic;color:var(--terracotta)}
+  .lead{
+    font-size:clamp(1.05rem,2.4vw,1.32rem);color:var(--text-dim);
+    max-width:62ch;margin-top:26px;line-height:1.7;font-weight:300;
+  }
+  .hero-meta{
+    display:flex;flex-wrap:wrap;gap:12px;margin-top:34px;
+  }
+  .chip{
+    font-family:var(--font-mono);font-size:12px;color:var(--text-dim);
+    border:1px solid var(--border-strong);border-radius:999px;padding:6px 14px;
+    background:var(--surface);
+  }
+
+  /* ---------- Sections ---------- */
+  section{padding:60px 0;position:relative}
+  .section-head{margin-bottom:38px;max-width:70ch}
+  .section-label{
+    font-family:var(--font-mono);font-size:12px;letter-spacing:0.14em;
+    text-transform:uppercase;color:var(--text-dim);font-weight:500;
+    display:flex;align-items:center;gap:10px;margin-bottom:14px;
+  }
+  .section-label .num{
+    color:var(--terracotta);font-weight:600;
+  }
+  h2{
+    font-family:var(--font-display);font-weight:400;
+    font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.2;
+    color:var(--ink);letter-spacing:-0.01em;
+  }
+  h2 em{font-style:italic;color:var(--terracotta)}
+  .section-head p{color:var(--text-dim);margin-top:14px;font-size:1.03rem;font-weight:300}
+
+  /* ---------- Cards ---------- */
+  .grid{display:grid;gap:18px}
+  .grid-2{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .grid-4{grid-template-columns:repeat(4,1fr)}
+
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    min-width:0;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--border-strong)}
+  .card h3{
+    font-family:var(--font-display);font-weight:400;font-size:1.28rem;
+    color:var(--ink);margin-bottom:9px;line-height:1.3;
+  }
+  .card p{font-size:0.95rem;color:var(--text-dim);line-height:1.68}
+  .card .tag{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:0.06em;
+    text-transform:uppercase;font-weight:600;margin-bottom:12px;display:inline-block;
+  }
+  .t-terra{color:var(--terracotta)}
+  .t-sage{color:var(--sage)}
+  .t-amber{color:var(--amber)}
+  .t-deep{color:var(--deep)}
+  .card-accent-t{border-top:3px solid var(--terracotta)}
+  .card-accent-s{border-top:3px solid var(--sage)}
+  .card-accent-a{border-top:3px solid var(--amber)}
+  .card-accent-d{border-top:3px solid var(--deep)}
+
+  /* ---------- Nested AI/ML/DL ---------- */
+  .nest{
+    display:flex;justify-content:center;align-items:center;
+    padding:20px 0;
+  }
+  .ring{
+    border-radius:50%;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    position:relative;
+  }
+  .ring-ai{width:min(100%,360px);aspect-ratio:1;background:var(--deep-dim);border:1.5px solid var(--deep)}
+  .ring-ml{width:74%;aspect-ratio:1;background:var(--sage-dim);border:1.5px solid var(--sage)}
+  .ring-dl{width:64%;aspect-ratio:1;background:var(--terracotta-dim);border:1.5px solid var(--terracotta)}
+  .ring .lab{
+    font-family:var(--font-mono);font-weight:600;font-size:12px;
+    letter-spacing:0.04em;color:var(--ink);
+  }
+  .ring-ai > .lab{position:absolute;top:9%}
+  .ring-ml > .lab{position:absolute;top:9%}
+  .ring-dl .lab{font-size:11.5px}
+
+  /* ---------- Timeline ---------- */
+  .timeline{position:relative;padding-left:0}
+  .timeline::before{
+    content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;
+    background:linear-gradient(var(--terracotta),var(--amber),var(--sage));transform:translateX(-50%);
+    opacity:.5;
+  }
+  .tl-item{display:grid;grid-template-columns:1fr 64px 1fr;align-items:center;margin-bottom:6px}
+  .tl-item .tl-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;box-shadow:var(--shadow-sm);
+  }
+  .tl-item .tl-card h4{
+    font-family:var(--font-display);font-weight:400;font-size:1.15rem;color:var(--ink);margin-bottom:5px;
+  }
+  .tl-item .tl-card p{font-size:0.9rem;color:var(--text-dim);line-height:1.6}
+  .tl-year{
+    font-family:var(--font-mono);font-weight:600;font-size:14px;color:var(--terracotta);
+    background:var(--bg);border:1.5px solid var(--terracotta);border-radius:999px;
+    width:64px;height:36px;display:flex;align-items:center;justify-content:center;
+    justify-self:center;z-index:2;
+  }
+  .tl-item.left .tl-card{grid-column:1;text-align:right}
+  .tl-item.left .tl-year{grid-column:2}
+  .tl-item.left .tl-empty{grid-column:3}
+  .tl-item.right .tl-empty{grid-column:1}
+  .tl-item.right .tl-year{grid-column:2}
+  .tl-item.right .tl-card{grid-column:3}
+  .tl-empty{display:block}
+
+  /* ---------- Flow ---------- */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:stretch}
+  .flow-step{
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:20px;position:relative;box-shadow:var(--shadow-sm);
+  }
+  .flow-step .step-num{
+    font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--terracotta);
+    letter-spacing:0.08em;
+  }
+  .flow-step h4{font-family:var(--font-display);font-weight:400;font-size:1.12rem;color:var(--ink);margin:8px 0 6px}
+  .flow-step p{font-size:0.88rem;color:var(--text-dim);line-height:1.6}
+
+  /* ---------- Prompt example ---------- */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .compare .col{border-radius:14px;padding:20px;border:1px solid var(--border);min-width:0}
+  .compare .bad{background:#fbeaea;border-color:#e6c4c4}
+  .compare .good{background:var(--sage-dim);border-color:#c3d6a6}
+  .compare .col h4{font-family:var(--font-mono);font-size:12px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;font-weight:600}
+  .compare .bad h4{color:#a33}
+  .compare .good h4{color:var(--sage)}
+  .compare .col p{font-size:0.92rem;color:var(--text);line-height:1.65;font-family:var(--font-mono);font-size:0.86rem}
+
+  /* ---------- Table ---------- */
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:var(--shadow-sm)}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;min-width:640px}
+  thead th{
+    font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.06em;text-transform:uppercase;
+    text-align:left;color:var(--text-dim);font-weight:600;
+    padding:14px 18px;background:var(--surface-2);border-bottom:1px solid var(--border-strong);
+    position:sticky;top:0;
+  }
+  tbody td{padding:14px 18px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:rgba(36,31,25,0.018)}
+  tbody tr:hover{background:var(--terracotta-dim)}
+  tbody td strong{color:var(--ink);font-weight:600}
+  .pill{
+    font-family:var(--font-mono);font-size:11px;padding:3px 9px;border-radius:999px;
+    font-weight:500;white-space:nowrap;
+  }
+  .pill.t{background:var(--terracotta-dim);color:var(--terracotta)}
+  .pill.s{background:var(--sage-dim);color:var(--sage)}
+  .pill.a{background:var(--amber-dim);color:var(--amber)}
+  .pill.d{background:var(--deep-dim);color:var(--deep)}
+
+  /* ---------- Callout ---------- */
+  .callout{
+    border-left:3px solid var(--amber);background:var(--amber-dim);
+    border-radius:0 12px 12px 0;padding:20px 24px;margin-top:26px;
+  }
+  .callout p{color:#6b4a12;font-size:0.98rem}
+  .callout strong{color:#4d3408}
+
+  /* ---------- Feature list ---------- */
+  .feature{display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px dashed var(--border)}
+  .feature:last-child{border-bottom:none}
+  .feature .ico{
+    flex:none;width:38px;height:38px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:600;font-size:14px;
+  }
+  .feature h4{font-family:var(--font-display);font-weight:400;font-size:1.08rem;color:var(--ink);margin-bottom:3px}
+  .feature p{font-size:0.9rem;color:var(--text-dim);line-height:1.6}
+
+  /* ---------- Steps (use guide) ---------- */
+  .steps{counter-reset:step;display:grid;gap:14px}
+  .step{
+    counter-increment:step;position:relative;padding:20px 24px 20px 68px;
+    background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    box-shadow:var(--shadow-sm);
+  }
+  .step::before{
+    content:counter(step,decimal-leading-zero);
+    position:absolute;left:20px;top:20px;
+    font-family:var(--font-mono);font-weight:600;font-size:15px;color:var(--terracotta);
+  }
+  .step h4{font-family:var(--font-display);font-weight:400;font-size:1.12rem;color:var(--ink);margin-bottom:5px}
+  .step p{font-size:0.92rem;color:var(--text-dim);line-height:1.62}
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top:1px solid var(--border);margin-top:40px;padding:40px 0 60px;
+    background:var(--bg-2);
+  }
+  footer .wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+  footer p{font-size:0.85rem;color:var(--text-dim);font-family:var(--font-mono)}
+
+  /* ---------- Reveal ---------- */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+    .card:hover{transform:none}
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .grid-4{grid-template-columns:repeat(2,1fr)}
+    .grid-3{grid-template-columns:repeat(2,1fr)}
+    .flow{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:640px){
+    body{font-size:16px}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .flow{grid-template-columns:1fr}
+    .compare{grid-template-columns:1fr}
+    header.hero{padding:52px 0 36px}
+    .timeline::before{left:18px}
+    .tl-item{grid-template-columns:36px 1fr;gap:0 14px}
+    .tl-item.left .tl-card,.tl-item.right .tl-card{grid-column:2;text-align:left}
+    .tl-item.left .tl-year,.tl-item.right .tl-year{grid-column:1;width:36px;height:36px;font-size:12px}
+    .tl-item .tl-empty{display:none}
+    .tl-item{margin-bottom:14px}
+    section{padding:44px 0}
+  }
+  /* ================= DARK THEME ================= */
+  html[data-theme="dark"]{
+    --bg:#15120e; --bg-2:#1b1712; --surface:#211c16; --surface-2:#262019;
+    --ink:#f4ede2; --text:#ddd4c6; --text-dim:#a1968a;
+    --border:rgba(244,237,226,0.13); --border-strong:rgba(244,237,226,0.24);
+    --terracotta:#e8825a; --terracotta-dim:#3a2419;
+    --sage:#9dc46a; --sage-dim:#28331b;
+    --amber:#e0a44a; --amber-dim:#382c15;
+    --deep:#8fb0d6; --deep-dim:#1b2733;
+    --shadow-sm:0 1px 2px rgba(0,0,0,0.3), 0 2px 10px rgba(0,0,0,0.25);
+    --shadow-md:0 6px 18px rgba(0,0,0,0.4), 0 16px 40px rgba(0,0,0,0.35);
+  }
+  html[data-theme="dark"] body{
+    background-image:
+      radial-gradient(900px 500px at 78% -8%, rgba(232,130,90,0.10), transparent 60%),
+      radial-gradient(760px 460px at 6% 4%, rgba(157,196,106,0.08), transparent 62%),
+      linear-gradient(rgba(244,237,226,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(244,237,226,0.05) 1px, transparent 1px);
+  }
+  html[data-theme="dark"] .compare .bad{background:#3a2222;border-color:#5c3a3a}
+  html[data-theme="dark"] .compare .bad h4{color:#e79b9b}
+  html[data-theme="dark"] .compare .col p{color:#e6d5c9 !important}
+  html[data-theme="dark"] .compare .good{background:#28331b;border-color:#40542a}
+  html[data-theme="dark"] .compare .good h4{color:var(--sage)}
+  html[data-theme="dark"] .callout p{color:var(--text) !important}
+  html[data-theme="dark"] .callout p strong{color:var(--ink) !important}
+  html[data-theme="dark"] tbody tr:hover{background:rgba(232,130,90,0.10)}
+
+  /* ================= THEME TOGGLE / PROGRESS ================= */
+  .theme-btn{
+    flex:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--border-strong);
+    background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;
+    justify-content:center;font-size:15px;line-height:1;transition:background .18s,color .18s,border-color .18s;
+  }
+  .theme-btn:hover{background:var(--terracotta-dim);color:var(--terracotta);border-color:var(--terracotta)}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--terracotta),var(--amber),var(--sage));z-index:60;transition:width .1s linear}
+
+  /* ================= STATS ================= */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:8px}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--shadow-sm)}
+  .stat .n{font-family:var(--font-mono);font-weight:600;font-size:clamp(1.6rem,4vw,2.2rem);color:var(--terracotta);line-height:1}
+  .stat .l{font-size:0.85rem;color:var(--text-dim);margin-top:9px;line-height:1.45}
+
+  /* ================= DIRECTORY ================= */
+  .filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+  .search-box{flex:1 1 260px;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border-strong);border-radius:11px;padding:11px 15px;min-width:200px}
+  .search-box input{border:none;background:transparent;outline:none;color:var(--text);font-family:var(--font-body);font-size:0.95rem;width:100%}
+  .search-box input::placeholder{color:var(--text-dim)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .chip-btn{font-family:var(--font-mono);font-size:12px;padding:7px 14px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-dim);cursor:pointer;transition:all .16s;white-space:nowrap}
+  .chip-btn:hover{border-color:var(--terracotta);color:var(--terracotta)}
+  .chip-btn.active{background:var(--terracotta);border-color:var(--terracotta);color:#fff}
+  .count-line{font-family:var(--font-mono);font-size:12.5px;color:var(--text-dim);margin-bottom:16px}
+  .dir-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .dir-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px;box-shadow:var(--shadow-sm);transition:transform .18s,box-shadow .18s,border-color .18s;min-width:0}
+  .dir-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--border-strong)}
+  .dir-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px}
+  .dir-card h4{font-family:var(--font-display);font-weight:400;font-size:1.1rem;color:var(--ink);line-height:1.25}
+  .dir-card .maker{font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-bottom:7px}
+  .dir-card p{font-size:0.88rem;color:var(--text-dim);line-height:1.55}
+  .dir-card .cat{font-family:var(--font-mono);font-size:10px;padding:3px 8px;border-radius:999px;white-space:nowrap;flex:none}
+  .no-results{grid-column:1/-1;text-align:center;color:var(--text-dim);padding:40px;font-family:var(--font-mono);font-size:0.9rem}
+
+  /* ================= QUIZ ================= */
+  .quiz{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;box-shadow:var(--shadow-sm);max-width:780px}
+  .q-item{padding:16px 0;border-bottom:1px dashed var(--border)}
+  .q-item:last-of-type{border-bottom:none}
+  .q-item .q{font-weight:600;color:var(--ink);margin-bottom:12px}
+  .opts{display:grid;gap:8px}
+  .opt{text-align:left;font-family:var(--font-body);font-size:0.92rem;padding:11px 14px;border-radius:10px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);cursor:pointer;transition:all .15s}
+  .opt:hover{border-color:var(--terracotta)}
+  .opt.correct{background:var(--sage-dim);border-color:var(--sage);color:var(--sage);font-weight:600}
+  .opt.wrong{background:#f6dede;border-color:#c96a6a;color:#a33}
+  html[data-theme="dark"] .opt.wrong{background:#3a2222;border-color:#8a4a4a;color:#e79b9b}
+  .opt:disabled{cursor:default;opacity:0.85}
+  .quiz-result{margin-top:16px;font-family:var(--font-mono);font-size:0.95rem;color:var(--terracotta);font-weight:600}
+
+  /* ================= MISC ================= */
+  #toTop{position:fixed;right:20px;bottom:20px;width:44px;height:44px;border-radius:50%;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;box-shadow:var(--shadow-md);display:none;align-items:center;justify-content:center;font-size:18px;z-index:55}
+  #toTop.show{display:flex}
+  #toTop:hover{background:var(--terracotta);color:#fff;border-color:var(--terracotta)}
+  .toggle-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .tl-item.dim{opacity:0.26}
+  .tl-item.dim .tl-card{filter:grayscale(0.6)}
+
+  @media (max-width:900px){ .dir-grid{grid-template-columns:repeat(2,1fr)} .stats{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:640px){ .dir-grid{grid-template-columns:1fr} .stats{grid-template-columns:1fr 1fr} }
+</style>
+<script>
+  (function(){
+    try{
+      var t = localStorage.getItem('ai-theme');
+      if(!t){ t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+      document.documentElement.setAttribute('data-theme', t);
+    }catch(e){}
+  })();
+</script>
+</head>
+<body>
+<div id="progress"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="brand"><span class="dot"></span>AI · परिचय</div>
+    <div class="nav-links">
+      <a href="#kya">क्या है</a>
+      <a href="#history">इतिहास</a>
+      <a href="#kaam">कैसे काम करता है</a>
+      <a href="#features">Features</a>
+      <a href="#use">कैसे use करें</a>
+      <a href="#tools">Tools</a>
+      <a href="#directory">सभी AI</a>
+      <a href="#applications">उपयोग</a>
+      <a href="#limits">सीमाएँ</a>
+      <a href="#future">भविष्य</a>
+      <a href="#quiz">Quiz</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="Theme बदलें" title="Dark / Light mode">◐</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow reveal">Artificial Intelligence · पूरा परिचय</div>
+    <h1 class="reveal">AI क्या है, कहाँ से आया, और इसे <em>कैसे use करें</em></h1>
+    <p class="lead reveal">Artificial Intelligence आज technology की सबसे बड़ी कहानी है। यह page आपको AI की history, इसके पीछे का विज्ञान, इसके features, और रोज़मर्रा में इसे use करने का practical तरीका — सब एक ही जगह, आसान भाषा में समझाता है।</p>
+    <div class="hero-meta reveal">
+      <span class="chip">शुरुआती लोगों के लिए</span>
+      <span class="chip">History · Features · Guide</span>
+      <span class="chip">Hindi + English</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="stats reveal">
+    <div class="stat"><div class="n" data-count="70" data-suffix="+">0</div><div class="l">साल का AI सफ़र (1956 से आज तक)</div></div>
+    <div class="stat"><div class="n" data-count="9" data-suffix="">0</div><div class="l">AI की मुख्य क्षमताएँ (features)</div></div>
+    <div class="stat"><div class="n" id="statTools" data-count="0" data-suffix="+">0</div><div class="l">AI tools इस directory में</div></div>
+    <div class="stat"><div class="n" data-count="12" data-suffix="+">0</div><div class="l">उद्योग जहाँ AI काम आ रहा है</div></div>
+  </div>
+</div>
+
+<!-- ===== 1. AI KYA HAI ===== -->
+<section id="kya">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">01</span> · परिभाषा</div>
+      <h2>AI आखिर <em>क्या है?</em></h2>
+      <p>आसान भाषा में — AI का मतलब है machines को ऐसा बनाना जो इंसान की तरह समझ सकें, सीख सकें, और फैसले ले सकें। यह कोई एक program नहीं, बल्कि तकनीकों का एक पूरा परिवार है।</p>
+    </div>
+
+    <div class="grid grid-3" style="margin-bottom:34px">
+      <div class="card card-accent-t reveal">
+        <span class="tag t-terra">समझना</span>
+        <h3>Perception</h3>
+        <p>AI images देख सकता है, आवाज़ सुन सकता है, और text पढ़ सकता है — यानी दुनिया को "समझ" सकता है।</p>
+      </div>
+      <div class="card card-accent-s reveal">
+        <span class="tag t-sage">सीखना</span>
+        <h3>Learning</h3>
+        <p>Data से patterns सीखकर AI अपने आप बेहतर होता जाता है — हर बार नए examples से उसकी समझ बढ़ती है।</p>
+      </div>
+      <div class="card card-accent-a reveal">
+        <span class="tag t-amber">करना</span>
+        <h3>Action</h3>
+        <p>सीखी हुई बातों के आधार पर AI जवाब देता है, सुझाव देता है, या काम अपने आप पूरा करता है।</p>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="align-items:center;gap:40px">
+      <div class="nest reveal">
+        <div class="ring ring-ai">
+          <span class="lab">AI · Artificial Intelligence</span>
+          <div class="ring ring-ml">
+            <span class="lab">ML · Machine Learning</span>
+            <div class="ring ring-dl">
+              <span class="lab">Deep Learning</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <h3 style="font-family:var(--font-display);font-weight:400;font-size:1.4rem;color:var(--ink);margin-bottom:12px">तीन layers को समझिए</h3>
+        <p style="color:var(--text-dim);margin-bottom:14px"><strong style="color:var(--deep)">AI</strong> सबसे बड़ा घेरा है — इसका मतलब है कोई भी ऐसा system जो इंसान जैसी बुद्धिमानी दिखाए।</p>
+        <p style="color:var(--text-dim);margin-bottom:14px"><strong style="color:var(--sage)">Machine Learning (ML)</strong> AI का वह हिस्सा है जिसमें machine data से खुद सीखती है, बजाय किसी ने सारे rules लिखने के।</p>
+        <p style="color:var(--text-dim)"><strong style="color:var(--terracotta)">Deep Learning</strong> ML का सबसे आधुनिक रूप है — यह neural networks पर चलता है, बिल्कुल इंसानी दिमाग के neurons की तरह। ChatGPT जैसे आधुनिक AI इसी पर बने हैं।</p>
+      </div>
+    </div>
+
+    <div class="grid grid-3" style="margin-top:36px">
+      <div class="card card-accent-d reveal">
+        <span class="tag t-deep">Level 1</span>
+        <h3>Narrow AI (आज का AI)</h3>
+        <p>एक ही काम में माहिर — जैसे translation, image पहचानना, या chat करना। आज के सारे AI tools इसी श्रेणी में आते हैं।</p>
+      </div>
+      <div class="card card-accent-a reveal">
+        <span class="tag t-amber">Level 2</span>
+        <h3>General AI (AGI)</h3>
+        <p>हर काम में इंसान जितना होशियार — यह अभी बना नहीं है। यह AI research का बड़ा लक्ष्य है।</p>
+      </div>
+      <div class="card card-accent-t reveal">
+        <span class="tag t-terra">Level 3</span>
+        <h3>Super AI (ASI)</h3>
+        <p>इंसान से कहीं आगे की बुद्धि — यह अभी सिर्फ कल्पना और चर्चा का विषय है, हकीकत नहीं।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2. HISTORY ===== -->
+<section id="history">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">02</span> · इतिहास</div>
+      <h2>AI की <em>history</em> — एक नज़र में</h2>
+      <p>AI आज अचानक नहीं आया। यह 70+ साल की research, कई उतार-चढ़ाव, और कुछ बड़े breakthroughs का नतीजा है। नीचे सारा सफ़र एक timeline में है — चाहें तो सिर्फ बड़े मील के पत्थर भी देख सकते हैं।</p>
+    </div>
+
+    <div class="toggle-row reveal">
+      <button class="chip-btn active" data-mode="all">सब दिखाएँ</button>
+      <button class="chip-btn" data-mode="milestones">सिर्फ बड़े मील के पत्थर</button>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item left reveal">
+        <div class="tl-card"><h4>Turing Test</h4><p>Alan Turing ने पूछा — "क्या machine सोच सकती है?" और एक test सुझाया जो आज भी चर्चित है।</p></div>
+        <div class="tl-year">1950</div>
+        <div class="tl-empty"></div>
+      </div>
+      <div class="tl-item right reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-year">1956</div>
+        <div class="tl-card"><h4>"AI" शब्द का जन्म</h4><p>Dartmouth Conference में John McCarthy ने पहली बार "Artificial Intelligence" नाम दिया — इसी से field शुरू हुई।</p></div>
+      </div>
+      <div class="tl-item left reveal">
+        <div class="tl-card"><h4>ELIZA — पहला chatbot</h4><p>Joseph Weizenbaum ने ELIZA बनाया — एक साधारण program जो इंसानों से बातें करता था। आज के chatbots के पूर्वज।</p></div>
+        <div class="tl-year">1966</div>
+        <div class="tl-empty"></div>
+      </div>
+      <div class="tl-item right reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-year">1974–80</div>
+        <div class="tl-card"><h4>पहला "AI Winter"</h4><p>बहुत बढ़े-चढ़े वादे पूरे नहीं हुए, funding रुक गई, और AI research ठंडा पड़ गया।</p></div>
+      </div>
+      <div class="tl-item left reveal">
+        <div class="tl-card"><h4>Expert Systems का दौर</h4><p>Businesses ने rule-based "expert systems" अपनाए, पर 1987–93 में दूसरा AI Winter भी आया।</p></div>
+        <div class="tl-year">1980s</div>
+        <div class="tl-empty"></div>
+      </div>
+      <div class="tl-item right reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-year">1997</div>
+        <div class="tl-card"><h4>Deep Blue vs Kasparov</h4><p>IBM का computer Deep Blue ने world chess champion Garry Kasparov को हरा दिया — AI ने इंसान को पहली बार पीछे छोड़ा।</p></div>
+      </div>
+      <div class="tl-item left reveal">
+        <div class="tl-card"><h4>AlexNet — Deep Learning का धमाका</h4><p>Image recognition में एक neural network ने सबको चौंकाया। इसी से modern deep learning era शुरू हुआ।</p></div>
+        <div class="tl-year">2012</div>
+        <div class="tl-empty"></div>
+      </div>
+      <div class="tl-item right reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-year">2016</div>
+        <div class="tl-card"><h4>AlphaGo</h4><p>Google के AlphaGo ने Go के world champion Lee Sedol को हराया — एक ऐसा खेल जो सबसे मुश्किल माना जाता था।</p></div>
+      </div>
+      <div class="tl-item left reveal">
+        <div class="tl-card"><h4>Transformer Architecture</h4><p>"Attention Is All You Need" paper ने Transformer पेश किया — आज के लगभग सारे बड़े AI models (LLMs) इसी पर बने हैं।</p></div>
+        <div class="tl-year">2017</div>
+        <div class="tl-empty"></div>
+      </div>
+      <div class="tl-item right reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-year">2020</div>
+        <div class="tl-card"><h4>GPT-3</h4><p>बहुत बड़े language model ने दिखाया कि AI लिख सकता है, समझा सकता है, और code भी बना सकता है।</p></div>
+      </div>
+      <div class="tl-item left reveal">
+        <div class="tl-card"><h4>ChatGPT — AI सबके लिए</h4><p>Nov 2022 में ChatGPT आया और चंद हफ्तों में करोड़ों लोगों तक पहुँचा। AI एक आम इंसान की रोज़मर्रा की चीज़ बन गया।</p></div>
+        <div class="tl-year">2022</div>
+        <div class="tl-empty"></div>
+      </div>
+      <div class="tl-item right reveal">
+        <div class="tl-empty"></div>
+        <div class="tl-year">2023–25</div>
+        <div class="tl-card"><h4>Multimodal, Agents और Reasoning</h4><p>AI अब image, आवाज़ और video भी समझता है। "AI agents" खुद काम करते हैं, और reasoning models सोच-समझकर जवाब देते हैं।</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3. KAISE KAAM KARTA HAI ===== -->
+<section id="kaam">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">03</span> · तकनीक</div>
+      <h2>AI असल में <em>काम कैसे करता है?</em></h2>
+      <p>जटिल लगता है, पर बुनियादी idea सीधा है — बहुत सारा data दो, machine खुद patterns खोज लेगी।</p>
+    </div>
+
+    <div class="flow">
+      <div class="flow-step reveal"><span class="step-num">STEP 01</span><h4>Data</h4><p>AI को लाखों examples दिए जाते हैं — text, photos, आवाज़, numbers। यही उसका "अनुभव" है।</p></div>
+      <div class="flow-step reveal"><span class="step-num">STEP 02</span><h4>Training</h4><p>Model data में patterns ढूँढता है और अपनी गलतियाँ सुधारता जाता है। इसे training कहते हैं।</p></div>
+      <div class="flow-step reveal"><span class="step-num">STEP 03</span><h4>Model</h4><p>Training के बाद बनता है एक trained model — data से सीखी हुई "समझ" का ढाँचा।</p></div>
+      <div class="flow-step reveal"><span class="step-num">STEP 04</span><h4>Inference</h4><p>अब जब आप सवाल पूछते हैं, model उसका जवाब देता है — इसे inference या prediction कहते हैं।</p></div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:34px;gap:18px">
+      <div class="card card-accent-t reveal">
+        <span class="tag t-terra">अंदर की बनावट</span>
+        <h3>Neural Networks</h3>
+        <p>Deep learning models "neural networks" पर चलते हैं — layers में जुड़े हुए छोटे-छोटे nodes, बिल्कुल दिमाग के neurons की तरह। हर layer कुछ नया सीखती है: पहली lines, अगली shapes, आगे पूरी चीज़।</p>
+      </div>
+      <div class="card card-accent-s reveal">
+        <span class="tag t-sage">आज का दिल</span>
+        <h3>Large Language Models (LLMs)</h3>
+        <p>ChatGPT जैसे tools "tokens" (शब्दों के टुकड़ों) पर चलते हैं। Model हर बार अनुमान लगाता है कि अगला token क्या होना चाहिए — यही prediction करोड़ों बार दोहराकर पूरा जवाब बनता है।</p>
+      </div>
+    </div>
+
+    <div class="callout reveal">
+      <p><strong>याद रखें:</strong> AI "समझता" नहीं जैसे इंसान समझता है। यह patterns और probabilities के आधार पर बेहद कुशल अंदाज़ा लगाता है — इसीलिए यह कभी-कभी गलत भी हो सकता है।</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. FEATURES ===== -->
+<section id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">04</span> · Features</div>
+      <h2>AI के प्रमुख <em>features</em></h2>
+      <p>ये वो क्षमताएँ हैं जिनके कारण AI आज हर क्षेत्र में इस्तेमाल हो रहा है।</p>
+    </div>
+
+    <div class="grid grid-2" style="gap:30px">
+      <div class="reveal">
+        <div class="feature">
+          <div class="ico" style="background:var(--terracotta-dim);color:var(--terracotta)">Tx</div>
+          <div><h4>Natural Language Processing</h4><p>इंसानी भाषा को समझना और लिखना — सवालों के जवाब, translation, summary, aur लेखन।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--sage-dim);color:var(--sage)">CV</div>
+          <div><h4>Computer Vision</h4><p>Images और videos को "देखना" — चेहरा पहचानना, medical scans पढ़ना, objects detect करना।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--amber-dim);color:var(--amber)">Au</div>
+          <div><h4>Speech & Audio</h4><p>आवाज़ को text में बदलना, text को आवाज़ में, और संगीत तक बनाना।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--deep-dim);color:var(--deep)">Gn</div>
+          <div><h4>Generative AI</h4><p>नया content बनाना — essays, code, images, video, aur design — माँगने पर।</p></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="feature">
+          <div class="ico" style="background:var(--terracotta-dim);color:var(--terracotta)">Rn</div>
+          <div><h4>Reasoning & Problem-solving</h4><p>कठिन सवालों को कदम-दर-कदम हल करना, गणित, logic, aur planning।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--sage-dim);color:var(--sage)">Pr</div>
+          <div><h4>Personalization</h4><p>आपकी पसंद के हिसाब से सुझाव — films, songs, products, aur content।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--amber-dim);color:var(--amber)">At</div>
+          <div><h4>Automation</h4><p>दोहराए जाने वाले काम अपने आप करना — emails, data entry, scheduling, aur reports।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--deep-dim);color:var(--deep)">Mm</div>
+          <div><h4>Multimodal</h4><p>एक साथ text, image, aur आवाज़ — सब समझना और जोड़कर जवाब देना।</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5. KAISE USE KAREIN ===== -->
+<section id="use">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">05</span> · Guide</div>
+      <h2>AI को <em>कैसे use करें?</em></h2>
+      <p>AI से सबसे अच्छा result पाने का राज़ है — साफ़ और पूरी जानकारी देने वाला prompt। यहाँ practical तरीका है।</p>
+    </div>
+
+    <div class="steps">
+      <div class="step reveal"><h4>साफ़ मकसद बताइए</h4><p>अस्पष्ट सवाल न पूछें। "Mujhe help chahiye" की जगह लिखें — "मुझे अपनी CV के लिए 3-line summary चाहिए, marketing profile के लिए।"</p></div>
+      <div class="step reveal"><h4>Context दीजिए</h4><p>AI को बताइए कि आप कौन हैं और किसके लिए चाहिए। जितना context, उतना बेहतर जवाब।</p></div>
+      <div class="step reveal"><h4>Format बताइए</h4><p>क्या चाहिए — list, table, email, ya short paragraph? Format बता दें तो जवाब तैयार मिलता है।</p></div>
+      <div class="step reveal"><h4>Example दीजिए</h4><p>एक नमूना दिखाइए कि आपको कैसा output चाहिए। AI उसी अंदाज़ में लिखेगा।</p></div>
+      <div class="step reveal"><h4>दोबारा बोलिए (iterate)</h4><p>पहला जवाब पसंद न आए तो सुधार माँगिए — "इसे छोटा करो", "और formal करो", "example जोड़ो"।</p></div>
+      <div class="step reveal"><h4>तथ्य verify कीजिए</h4><p>AI गलत भी हो सकता है। ज़रूरी जानकारी — numbers, dates, legal, medical — हमेशा खुद जाँच लें।</p></div>
+    </div>
+
+    <h3 class="reveal" style="font-family:var(--font-display);font-weight:400;font-size:1.4rem;color:var(--ink);margin:40px 0 18px">एक weak और एक strong prompt</h3>
+    <div class="compare">
+      <div class="col bad reveal">
+        <h4>कमज़ोर prompt</h4>
+        <p>"Mujhe ek email likh do."</p>
+        <p style="font-family:var(--font-body);font-size:0.88rem;color:#7a4a4a;margin-top:12px">समस्या: AI को पता नहीं किसे, किस बारे में, किस tone में लिखना है।</p>
+      </div>
+      <div class="col good reveal">
+        <h4>मज़बूत prompt</h4>
+        <p>"मेरे manager को एक short email लिखो — मैं कल की meeting में leave की वजह से नहीं आ पाऊँगा। Tone polite और professional रखो, 4 lines में।"</p>
+        <p style="font-family:var(--font-body);font-size:0.88rem;color:#3f5a22;margin-top:12px">नतीजा: साफ़, तैयार-इस्तेमाल जवाब।</p>
+      </div>
+    </div>
+
+    <div class="callout reveal" style="border-left-color:var(--sage);background:var(--sage-dim)">
+      <p style="color:#3a5218"><strong style="color:#2c3d12">सुनहरा नियम:</strong> AI एक सहायक है, जादू नहीं। यह आपका समय बचाता है और ideas देता है — पर final फैसला और जाँच आपकी रहती है।</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6. TOOLS ===== -->
+<section id="tools">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">06</span> · Tools</div>
+      <h2>लोकप्रिय AI tools</h2>
+      <p>अलग-अलग कामों के लिए अलग tools बेहतर हैं। नीचे एक आसान नज़रिया है — कौन किसके लिए।</p>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr><th>Tool</th><th>बनाने वाला</th><th>किसके लिए बेहतर</th><th>प्रकार</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>ChatGPT</strong></td><td>OpenAI</td><td>चैट, लेखन, coding, सामान्य सवाल-जवाब</td><td><span class="pill t">Chatbot</span></td></tr>
+          <tr><td><strong>Gemini</strong></td><td>Google</td><td>Google apps के साथ काम, search, multimodal</td><td><span class="pill t">Chatbot</span></td></tr>
+          <tr><td><strong>Claude</strong></td><td>Anthropic</td><td>लंबे documents, writing, analysis</td><td><span class="pill t">Chatbot</span></td></tr>
+          <tr><td><strong>Microsoft Copilot</strong></td><td>Microsoft</td><td>Office, Windows, और कामकाजी productivity</td><td><span class="pill d">Assistant</span></td></tr>
+          <tr><td><strong>Midjourney / DALL·E</strong></td><td>अलग-अलग</td><td>Images और artwork बनाना</td><td><span class="pill a">Image AI</span></td></tr>
+          <tr><td><strong>Perplexity</strong></td><td>Perplexity AI</td><td>Sources के साथ research और search</td><td><span class="pill s">Search AI</span></td></tr>
+          <tr><td><strong>GitHub Copilot</strong></td><td>GitHub / OpenAI</td><td>Developers के लिए code लिखना और सुझाव</td><td><span class="pill d">Coding</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.82rem;color:var(--text-dim);margin-top:12px;font-family:var(--font-mono)">नोट: AI tools तेज़ी से बदलते हैं — features और नाम समय के साथ अपडेट होते रहते हैं।</p>
+  </div>
+</section>
+
+<!-- ===== 6b. SABHI AI DIRECTORY ===== -->
+<section id="directory">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">06·b</span> · Directory</div>
+      <h2>सभी AI — <em>एक directory</em></h2>
+      <p>दुनिया भर के लोकप्रिय AI tools, category के हिसाब से। नीचे search box में लिखिए या category चुनिए — आपके काम का सही tool ढूँढना आसान हो जाएगा।</p>
+    </div>
+
+    <div class="filter-bar reveal">
+      <div class="search-box">
+        <span style="color:var(--text-dim)">⌕</span>
+        <input type="text" id="aiSearch" placeholder="Tool का नाम या काम लिखिए… (जैसे: video, code, भाषा)">
+      </div>
+    </div>
+
+    <div class="chips reveal" id="aiChips">
+      <button class="chip-btn active" data-filter="all">सभी</button>
+      <button class="chip-btn" data-filter="chat">Chatbot / LLM</button>
+      <button class="chip-btn" data-filter="image">Image</button>
+      <button class="chip-btn" data-filter="video">Video</button>
+      <button class="chip-btn" data-filter="audio">Audio / Music</button>
+      <button class="chip-btn" data-filter="code">Coding</button>
+      <button class="chip-btn" data-filter="write">Writing</button>
+      <button class="chip-btn" data-filter="search">Search / Research</button>
+      <button class="chip-btn" data-filter="work">Productivity</button>
+      <button class="chip-btn" data-filter="design">Design</button>
+      <button class="chip-btn" data-filter="slides">Presentation</button>
+      <button class="chip-btn" data-filter="data">Data</button>
+      <button class="chip-btn" data-filter="translate">Translation</button>
+      <button class="chip-btn" data-filter="india">Indian AI</button>
+    </div>
+
+    <div class="count-line" id="aiCount"></div>
+
+    <div class="dir-grid" id="aiGrid">
+      <div class="dir-card" data-cat="chat" data-name="chatgpt openai chatbot llm चैट लेखन coding code सवाल">
+        <div class="top"><h4>ChatGPT</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">OpenAI</div>
+        <p>चैट, लेखन, coding और आम सवाल-जवाब — सबसे लोकप्रिय AI।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="gemini google chatbot multimodal search">
+        <div class="top"><h4>Gemini</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">Google</div>
+        <p>Google apps से जुड़ा assistant, multimodal (text + image + voice)।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="claude anthropic chatbot writing analysis">
+        <div class="top"><h4>Claude</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">Anthropic</div>
+        <p>लंबे documents पढ़ने और गहरी writing / analysis के लिए।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="copilot microsoft assistant office work productivity">
+        <div class="top"><h4>Microsoft Copilot</h4><span class="cat pill t">Assistant</span></div>
+        <div class="maker">Microsoft</div>
+        <p>Office, Windows और रोज़ के काम में productivity साथी।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="meta llama chatbot open source">
+        <div class="top"><h4>Meta AI (Llama)</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">Meta</div>
+        <p>open-source models और apps में मदद।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="grok xai chatbot realtime news">
+        <div class="top"><h4>Grok</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">xAI</div>
+        <p>real-time जानकारी के साथ बातचीत।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="deepseek chatbot reasoning code">
+        <div class="top"><h4>DeepSeek</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">DeepSeek</div>
+        <p>reasoning और coding में मज़बूत, किफ़ायती।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="mistral lechat chatbot europe open">
+        <div class="top"><h4>Mistral / Le Chat</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">Mistral AI</div>
+        <p>यूरोप के कुशल open models।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="qwen alibaba chatbot multilingual">
+        <div class="top"><h4>Qwen</h4><span class="cat pill t">Chatbot</span></div>
+        <div class="maker">Alibaba</div>
+        <p>multilingual open models, कई भाषाएँ।</p>
+      </div>
+      <div class="dir-card" data-cat="chat" data-name="poe quora aggregator chatbot models">
+        <div class="top"><h4>Poe</h4><span class="cat pill t">Aggregator</span></div>
+        <div class="maker">Quora</div>
+        <p>कई AI models एक ही जगह आज़माएँ।</p>
+      </div>
+
+      <div class="dir-card" data-cat="image" data-name="midjourney image art design">
+        <div class="top"><h4>Midjourney</h4><span class="cat pill a">Image</span></div>
+        <div class="maker">Midjourney</div>
+        <p>कलात्मक, high-quality images।</p>
+      </div>
+      <div class="dir-card" data-cat="image" data-name="dalle openai image text-to-image">
+        <div class="top"><h4>DALL·E</h4><span class="cat pill a">Image</span></div>
+        <div class="maker">OpenAI</div>
+        <p>आसान text-to-image generation।</p>
+      </div>
+      <div class="dir-card" data-cat="image" data-name="stable diffusion stability image open source">
+        <div class="top"><h4>Stable Diffusion</h4><span class="cat pill a">Image</span></div>
+        <div class="maker">Stability AI</div>
+        <p>open-source image generation, अपने computer पर भी।</p>
+      </div>
+      <div class="dir-card" data-cat="image" data-name="firefly adobe image design creative">
+        <div class="top"><h4>Adobe Firefly</h4><span class="cat pill a">Image</span></div>
+        <div class="maker">Adobe</div>
+        <p>commercial-safe creative images और edits।</p>
+      </div>
+      <div class="dir-card" data-cat="image" data-name="ideogram image text poster">
+        <div class="top"><h4>Ideogram</h4><span class="cat pill a">Image</span></div>
+        <div class="maker">Ideogram</div>
+        <p>images के अंदर साफ़ और सही text।</p>
+      </div>
+      <div class="dir-card" data-cat="image" data-name="flux image realistic open">
+        <div class="top"><h4>Flux</h4><span class="cat pill a">Image</span></div>
+        <div class="maker">Black Forest Labs</div>
+        <p>realistic images, open models।</p>
+      </div>
+
+      <div class="dir-card" data-cat="video" data-name="sora openai video text-to-video">
+        <div class="top"><h4>Sora</h4><span class="cat pill a">Video</span></div>
+        <div class="maker">OpenAI</div>
+        <p>text से realistic video बनाना।</p>
+      </div>
+      <div class="dir-card" data-cat="video" data-name="runway video editing generation">
+        <div class="top"><h4>Runway</h4><span class="cat pill a">Video</span></div>
+        <div class="maker">Runway</div>
+        <p>video generation और editing।</p>
+      </div>
+      <div class="dir-card" data-cat="video" data-name="pika video short creative">
+        <div class="top"><h4>Pika</h4><span class="cat pill a">Video</span></div>
+        <div class="maker">Pika</div>
+        <p>छोटे creative videos और effects।</p>
+      </div>
+      <div class="dir-card" data-cat="video" data-name="veo google video generation">
+        <div class="top"><h4>Veo</h4><span class="cat pill a">Video</span></div>
+        <div class="maker">Google</div>
+        <p>high-quality AI video generation।</p>
+      </div>
+      <div class="dir-card" data-cat="video" data-name="synthesia video avatar presenter training">
+        <div class="top"><h4>Synthesia</h4><span class="cat pill a">Video</span></div>
+        <div class="maker">Synthesia</div>
+        <p>AI avatars से training और business videos।</p>
+      </div>
+      <div class="dir-card" data-cat="video" data-name="heygen video avatar translate lip-sync">
+        <div class="top"><h4>HeyGen</h4><span class="cat pill a">Video</span></div>
+        <div class="maker">HeyGen</div>
+        <p>talking avatars और video translation।</p>
+      </div>
+
+      <div class="dir-card" data-cat="audio" data-name="elevenlabs audio voice tts dubbing">
+        <div class="top"><h4>ElevenLabs</h4><span class="cat pill s">Audio</span></div>
+        <div class="maker">ElevenLabs</div>
+        <p>बेहद natural AI voice और dubbing।</p>
+      </div>
+      <div class="dir-card" data-cat="audio" data-name="suno audio music song generate">
+        <div class="top"><h4>Suno</h4><span class="cat pill s">Music</span></div>
+        <div class="maker">Suno</div>
+        <p>पूरे गाने और music बनाना।</p>
+      </div>
+      <div class="dir-card" data-cat="audio" data-name="udio audio music vocals">
+        <div class="top"><h4>Udio</h4><span class="cat pill s">Music</span></div>
+        <div class="maker">Udio</div>
+        <p>AI music creation और vocals।</p>
+      </div>
+      <div class="dir-card" data-cat="audio" data-name="murf audio voice voiceover narration">
+        <div class="top"><h4>Murf AI</h4><span class="cat pill s">Voice</span></div>
+        <div class="maker">Murf</div>
+        <p>voiceover और narration के लिए।</p>
+      </div>
+      <div class="dir-card" data-cat="audio" data-name="whisper openai audio speech transcription stt">
+        <div class="top"><h4>Whisper</h4><span class="cat pill s">Speech</span></div>
+        <div class="maker">OpenAI</div>
+        <p>speech-to-text transcription, कई भाषाएँ।</p>
+      </div>
+
+      <div class="dir-card" data-cat="code" data-name="copilot github code programming autocomplete">
+        <div class="top"><h4>GitHub Copilot</h4><span class="cat pill d">Code</span></div>
+        <div class="maker">GitHub / OpenAI</div>
+        <p>code लिखना, complete करना और सुझाव देना।</p>
+      </div>
+      <div class="dir-card" data-cat="code" data-name="cursor code editor programming ide">
+        <div class="top"><h4>Cursor</h4><span class="cat pill d">Code</span></div>
+        <div class="maker">Anysphere</div>
+        <p>AI-first code editor, पूरा project समझता है।</p>
+      </div>
+      <div class="dir-card" data-cat="code" data-name="replit code programming browser">
+        <div class="top"><h4>Replit AI</h4><span class="cat pill d">Code</span></div>
+        <div class="maker">Replit</div>
+        <p>browser में code लिखना + AI assistant।</p>
+      </div>
+      <div class="dir-card" data-cat="code" data-name="windsurf codeium code agent programming">
+        <div class="top"><h4>Windsurf</h4><span class="cat pill d">Code</span></div>
+        <div class="maker">Codeium</div>
+        <p>agentic coding assistant।</p>
+      </div>
+      <div class="dir-card" data-cat="code" data-name="tabnine code completion privacy">
+        <div class="top"><h4>Tabnine</h4><span class="cat pill d">Code</span></div>
+        <div class="maker">Tabnine</div>
+        <p>private और secure code completion।</p>
+      </div>
+      <div class="dir-card" data-cat="code" data-name="amazon q code aws cloud developer">
+        <div class="top"><h4>Amazon Q Developer</h4><span class="cat pill d">Code</span></div>
+        <div class="maker">AWS</div>
+        <p>AWS cloud के लिए coding assistant।</p>
+      </div>
+
+      <div class="dir-card" data-cat="write" data-name="jasper write marketing content copy">
+        <div class="top"><h4>Jasper</h4><span class="cat pill t">Writing</span></div>
+        <div class="maker">Jasper</div>
+        <p>marketing और brand content।</p>
+      </div>
+      <div class="dir-card" data-cat="write" data-name="copyai write marketing copy ads">
+        <div class="top"><h4>Copy.ai</h4><span class="cat pill t">Writing</span></div>
+        <div class="maker">Copy.ai</div>
+        <p>ads, emails और copy लिखना।</p>
+      </div>
+      <div class="dir-card" data-cat="write" data-name="grammarly write grammar tone editing">
+        <div class="top"><h4>Grammarly</h4><span class="cat pill t">Writing</span></div>
+        <div class="maker">Grammarly</div>
+        <p>grammar, spelling और tone सुधार।</p>
+      </div>
+      <div class="dir-card" data-cat="write" data-name="notion write notes docs">
+        <div class="top"><h4>Notion AI</h4><span class="cat pill t">Writing</span></div>
+        <div class="maker">Notion</div>
+        <p>notes और docs में लिखने-समझने की मदद।</p>
+      </div>
+      <div class="dir-card" data-cat="write" data-name="quillbot write paraphrase summary">
+        <div class="top"><h4>QuillBot</h4><span class="cat pill t">Writing</span></div>
+        <div class="maker">QuillBot</div>
+        <p>paraphrase, summary और rewrite।</p>
+      </div>
+
+      <div class="dir-card" data-cat="search" data-name="perplexity search research sources">
+        <div class="top"><h4>Perplexity</h4><span class="cat pill s">Search</span></div>
+        <div class="maker">Perplexity AI</div>
+        <p>sources के साथ भरोसेमंद जवाब।</p>
+      </div>
+      <div class="dir-card" data-cat="search" data-name="notebooklm google research documents study">
+        <div class="top"><h4>NotebookLM</h4><span class="cat pill s">Research</span></div>
+        <div class="maker">Google</div>
+        <p>आपके अपने documents से जवाब और summary।</p>
+      </div>
+      <div class="dir-card" data-cat="search" data-name="elicit research papers academic">
+        <div class="top"><h4>Elicit</h4><span class="cat pill s">Research</span></div>
+        <div class="maker">Elicit</div>
+        <p>research papers का analysis।</p>
+      </div>
+      <div class="dir-card" data-cat="search" data-name="consensus research evidence studies">
+        <div class="top"><h4>Consensus</h4><span class="cat pill s">Research</span></div>
+        <div class="maker">Consensus</div>
+        <p>studies से evidence-based जवाब।</p>
+      </div>
+      <div class="dir-card" data-cat="search" data-name="you search engine">
+        <div class="top"><h4>You.com</h4><span class="cat pill s">Search</span></div>
+        <div class="maker">You.com</div>
+        <p>AI-powered search engine।</p>
+      </div>
+
+      <div class="dir-card" data-cat="work" data-name="otter work meeting notes transcript">
+        <div class="top"><h4>Otter.ai</h4><span class="cat pill d">Meetings</span></div>
+        <div class="maker">Otter</div>
+        <p>meeting notes, transcript और summary।</p>
+      </div>
+      <div class="dir-card" data-cat="work" data-name="zapier work automation workflow">
+        <div class="top"><h4>Zapier AI</h4><span class="cat pill d">Automation</span></div>
+        <div class="maker">Zapier</div>
+        <p>apps को जोड़कर काम automate करना।</p>
+      </div>
+      <div class="dir-card" data-cat="work" data-name="taskade work tasks project todo">
+        <div class="top"><h4>Taskade</h4><span class="cat pill d">Tasks</span></div>
+        <div class="maker">Taskade</div>
+        <p>AI से tasks, projects और to-do।</p>
+      </div>
+      <div class="dir-card" data-cat="work" data-name="fireflies work meeting assistant">
+        <div class="top"><h4>Fireflies</h4><span class="cat pill d">Meetings</span></div>
+        <div class="maker">Fireflies</div>
+        <p>meeting assistant और notes।</p>
+      </div>
+
+      <div class="dir-card" data-cat="design" data-name="canva design poster social">
+        <div class="top"><h4>Canva Magic Studio</h4><span class="cat pill a">Design</span></div>
+        <div class="maker">Canva</div>
+        <p>आसान AI design, posters और social posts।</p>
+      </div>
+      <div class="dir-card" data-cat="design" data-name="figma design ui ux">
+        <div class="top"><h4>Figma AI</h4><span class="cat pill a">Design</span></div>
+        <div class="maker">Figma</div>
+        <p>UI/UX design में मदद।</p>
+      </div>
+      <div class="dir-card" data-cat="design" data-name="framer design website no-code">
+        <div class="top"><h4>Framer AI</h4><span class="cat pill a">Design</span></div>
+        <div class="maker">Framer</div>
+        <p>AI से website और layout बनाना।</p>
+      </div>
+      <div class="dir-card" data-cat="design" data-name="uizard design ui mockup prototype">
+        <div class="top"><h4>Uizard</h4><span class="cat pill a">Design</span></div>
+        <div class="maker">Uizard</div>
+        <p>text से UI mockups और prototypes।</p>
+      </div>
+
+      <div class="dir-card" data-cat="slides" data-name="gamma slides presentation deck">
+        <div class="top"><h4>Gamma</h4><span class="cat pill t">Slides</span></div>
+        <div class="maker">Gamma</div>
+        <p>prompt से सुंदर presentations।</p>
+      </div>
+      <div class="dir-card" data-cat="slides" data-name="tome slides presentation">
+        <div class="top"><h4>Tome</h4><span class="cat pill t">Slides</span></div>
+        <div class="maker">Tome</div>
+        <p>AI presentations और storytelling।</p>
+      </div>
+      <div class="dir-card" data-cat="slides" data-name="beautiful slides presentation">
+        <div class="top"><h4>Beautiful.ai</h4><span class="cat pill t">Slides</span></div>
+        <div class="maker">Beautiful.ai</div>
+        <p>auto-formatted, साफ़ slides।</p>
+      </div>
+      <div class="dir-card" data-cat="slides" data-name="slidesai slides google presentation">
+        <div class="top"><h4>SlidesAI</h4><span class="cat pill t">Slides</span></div>
+        <div class="maker">SlidesAI</div>
+        <p>Google Slides में AI मदद।</p>
+      </div>
+
+      <div class="dir-card" data-cat="data" data-name="julius data analysis chart excel">
+        <div class="top"><h4>Julius AI</h4><span class="cat pill d">Data</span></div>
+        <div class="maker">Julius</div>
+        <p>chat से data analysis और charts।</p>
+      </div>
+      <div class="dir-card" data-cat="data" data-name="powerbi copilot data reports insights">
+        <div class="top"><h4>Power BI Copilot</h4><span class="cat pill d">Data</span></div>
+        <div class="maker">Microsoft</div>
+        <p>reports और insights आसानी से।</p>
+      </div>
+      <div class="dir-card" data-cat="data" data-name="tableau pulse data insights">
+        <div class="top"><h4>Tableau Pulse</h4><span class="cat pill d">Data</span></div>
+        <div class="maker">Salesforce</div>
+        <p>data से अपने आप insights।</p>
+      </div>
+
+      <div class="dir-card" data-cat="translate" data-name="deepl translate language">
+        <div class="top"><h4>DeepL</h4><span class="cat pill s">Translate</span></div>
+        <div class="maker">DeepL</div>
+        <p>बेहद सटीक translation।</p>
+      </div>
+      <div class="dir-card" data-cat="translate" data-name="google translate language">
+        <div class="top"><h4>Google Translate</h4><span class="cat pill s">Translate</span></div>
+        <div class="maker">Google</div>
+        <p>100+ भाषाओं में translation।</p>
+      </div>
+      <div class="dir-card" data-cat="translate" data-name="sarvam translate indic hindi language india">
+        <div class="top"><h4>Sarvam Translate</h4><span class="cat pill s">Translate</span></div>
+        <div class="maker">Sarvam AI</div>
+        <p>Indic भाषाओं के लिए बना translation।</p>
+      </div>
+
+      <div class="dir-card" data-cat="india" data-name="sarvam india indic llm voice translate">
+        <div class="top"><h4>Sarvam AI</h4><span class="cat pill a">India</span></div>
+        <div class="maker">Sarvam AI</div>
+        <p>Indic LLM, voice और translation platform।</p>
+      </div>
+      <div class="dir-card" data-cat="india" data-name="krutrim ola india llm assistant">
+        <div class="top"><h4>Krutrim</h4><span class="cat pill a">India</span></div>
+        <div class="maker">Ola</div>
+        <p>भारत का अपना AI assistant और models।</p>
+      </div>
+      <div class="dir-card" data-cat="india" data-name="bharatgpt gajendra corover india chatbot">
+        <div class="top"><h4>BharatGPT (Gajendra)</h4><span class="cat pill a">India</span></div>
+        <div class="maker">CoRover</div>
+        <p>Indic chatbot और voice assistant।</p>
+      </div>
+      <div class="dir-card" data-cat="india" data-name="bhashini india government language translate">
+        <div class="top"><h4>Bhashini</h4><span class="cat pill a">India</span></div>
+        <div class="maker">Govt of India</div>
+        <p>भारतीय भाषाओं का सरकारी platform।</p>
+      </div>
+      <div class="dir-card" data-cat="india" data-name="jugalbandi ai4bharat india chatbot schemes">
+        <div class="top"><h4>Jugalbandi</h4><span class="cat pill a">India</span></div>
+        <div class="maker">AI4Bharat</div>
+        <p>सरकारी योजनाओं के लिए chatbot।</p>
+      </div>
+
+      <div class="no-results" id="noResults" style="display:none">कोई tool नहीं मिला — दूसरा नाम या category आज़माइए।</div>
+    </div>
+
+    <p style="font-size:0.82rem;color:var(--text-dim);margin-top:14px;font-family:var(--font-mono)">नोट: यह सूची लोकप्रिय tools की है और समय के साथ बदलती रहती है। यहाँ कोई नाम recommendation नहीं, सिर्फ जानकारी है।</p>
+  </div>
+</section>
+
+<!-- ===== 7. APPLICATIONS ===== -->
+<section id="applications">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">07</span> · उपयोग</div>
+      <h2>AI कहाँ-कहाँ <em>इस्तेमाल</em> हो रहा है?</h2>
+      <p>आज AI लगभग हर क्षेत्र में पहुँच चुका है — कुछ असली उदाहरण।</p>
+    </div>
+
+    <div class="grid grid-4">
+      <div class="card card-accent-t reveal"><span class="tag t-terra">Health</span><h3>Healthcare</h3><p>Medical scans पढ़ना, बीमारी का शुरुआती पता, नई दवाओं की खोज।</p></div>
+      <div class="card card-accent-s reveal"><span class="tag t-sage">Education</span><h3>Education</h3><p>Personalized tutoring, doubt-solving, और हर student के लिए अलग pace।</p></div>
+      <div class="card card-accent-a reveal"><span class="tag t-amber">Business</span><h3>Business</h3><p>Customer support, sales forecast, marketing, और data से फैसले।</p></div>
+      <div class="card card-accent-d reveal"><span class="tag t-deep">Agri</span><h3>Agriculture</h3><p>फसल की निगरानी, मौसम भविष्यवाणी, और कीट-रोग की पहचान।</p></div>
+      <div class="card card-accent-s reveal"><span class="tag t-sage">Mobility</span><h3>Transport</h3><p>Navigation, self-driving research, और traffic management।</p></div>
+      <div class="card card-accent-a reveal"><span class="tag t-amber">Fun</span><h3>Entertainment</h3><p>Film/music सुझाव, content creation, और gaming।</p></div>
+      <div class="card card-accent-d reveal"><span class="tag t-deep">Science</span><h3>Research</h3><p>Protein structure (जैसे AlphaFold), climate models, और space data।</p></div>
+      <div class="card card-accent-t reveal"><span class="tag t-terra">Daily</span><h3>रोज़मर्रा</h3><p>Voice assistants, maps, spam filter, photo editing, aur translation।</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8. LIMITS ===== -->
+<section id="limits">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">08</span> · सीमाएँ</div>
+      <h2>AI की <em>सीमाएँ</em> और चुनौतियाँ</h2>
+      <p>AI शक्तिशाली है, पर परफेक्ट नहीं। इसकी कमज़ोरियों को जानना भी ज़रूरी है।</p>
+    </div>
+
+    <div class="grid grid-2" style="gap:30px">
+      <div class="reveal">
+        <div class="feature">
+          <div class="ico" style="background:var(--terracotta-dim);color:var(--terracotta)">Hl</div>
+          <div><h4>Hallucination</h4><p>AI आत्मविश्वास से ऐसी बातें कह सकता है जो बिल्कुल गलत हों — तथ्य हमेशा जाँचें।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--terracotta-dim);color:var(--terracotta)">Bi</div>
+          <div><h4>Bias</h4><p>Data में मौजूद पूर्वाग्रह AI के नतीजों में भी आ जाते हैं — यह unfair फैसले दे सकता है।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--terracotta-dim);color:var(--terracotta)">Pv</div>
+          <div><h4>Privacy</h4><p>Personal data का इस्तेमाल और सुरक्षा एक बड़ा सवाल है — संवेदनशील जानकारी सोच-समझकर दें।</p></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="feature">
+          <div class="ico" style="background:var(--deep-dim);color:var(--deep)">Un</div>
+          <div><h4>सीमित समझ</h4><p>AI असल में "समझता" नहीं — context, मज़ाक, और भावनाओं में यह अक्सर चूक करता है।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--deep-dim);color:var(--deep)">Jb</div>
+          <div><h4>नौकरियों पर असर</h4><p>कुछ काम automate हो रहे हैं — नई skills सीखना और adaptability ज़रूरी हो गया है।</p></div>
+        </div>
+        <div class="feature">
+          <div class="ico" style="background:var(--deep-dim);color:var(--deep)">Df</div>
+          <div><h4>Deepfakes और misuse</h4><p>नकली images, आवाज़ और video बनाए जा सकते हैं — सतर्क रहें और स्रोत जाँचें।</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 9. FUTURE ===== -->
+<section id="future">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">09</span> · भविष्य</div>
+      <h2>AI का <em>आगे का रास्ता</em></h2>
+    </div>
+    <div class="grid grid-3">
+      <div class="card card-accent-t reveal">
+        <span class="tag t-terra">आ रहा है</span>
+        <h3>AI Agents</h3>
+        <p>ऐसे AI जो सिर्फ जवाब नहीं देते, बल्कि खुद कई कदम उठाकर पूरा काम करते हैं — booking से लेकर research तक।</p>
+      </div>
+      <div class="card card-accent-s reveal">
+        <span class="tag t-sage">लक्ष्य</span>
+        <h3>AGI की तलाश</h3>
+        <p>Researchers का बड़ा लक्ष्य है — ऐसा AI जो हर काम में इंसान जितना कुशल हो। पर यह अभी दूर है।</p>
+      </div>
+      <div class="card card-accent-a reveal">
+        <span class="tag t-amber">ज़रूरी</span>
+        <h3>नियम और सुरक्षा</h3>
+        <p>सरकारें और संस्थाएँ AI के लिए कानून और safety guidelines बना रही हैं, ताकि यह भरोसेमंद और fair रहे।</p>
+      </div>
+    </div>
+    <div class="callout reveal" style="border-left-color:var(--terracotta);background:var(--terracotta-dim)">
+      <p style="color:#7a2e08"><strong style="color:#571f05">सबसे ज़रूरी बात:</strong> AI आपकी जगह नहीं लेगा — पर जो इसे ठीक से use करना जानेगा, वह आगे रहेगा। सीखते रहिए, आज़माते रहिए, और समझदारी से इस्तेमाल कीजिए।</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10. QUIZ ===== -->
+<section id="quiz">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="section-label"><span class="num">10</span> · Quiz</div>
+      <h2>थोड़ा <em>test</em> कीजिए!</h2>
+      <p>देखें कि इस page से आपने कितना सीखा — किसी भी option पर click कीजिए और तुरंत सही/गलत पता चल जाएगा।</p>
+    </div>
+    <div class="quiz reveal" id="quizBox">
+      <div class="q-item" data-answer="b">
+        <div class="q">1. "Artificial Intelligence" शब्द पहली बार किस साल आया?</div>
+        <div class="opts">
+          <button class="opt" data-key="a">1950</button>
+          <button class="opt" data-key="b">1956</button>
+          <button class="opt" data-key="c">1997</button>
+          <button class="opt" data-key="d">2012</button>
+        </div>
+      </div>
+      <div class="q-item" data-answer="c">
+        <div class="q">2. आज के लगभग सारे AI tools किस श्रेणी में आते हैं?</div>
+        <div class="opts">
+          <button class="opt" data-key="a">Super AI</button>
+          <button class="opt" data-key="b">General AI</button>
+          <button class="opt" data-key="c">Narrow AI</button>
+          <button class="opt" data-key="d">इनमें से कोई नहीं</button>
+        </div>
+      </div>
+      <div class="q-item" data-answer="a">
+        <div class="q">3. ChatGPT जैसे models किस architecture पर बने हैं?</div>
+        <div class="opts">
+          <button class="opt" data-key="a">Transformer</button>
+          <button class="opt" data-key="b">ELIZA</button>
+          <button class="opt" data-key="c">Deep Blue</button>
+          <button class="opt" data-key="d">Expert System</button>
+        </div>
+      </div>
+      <div class="q-item" data-answer="b">
+        <div class="q">4. AI की सबसे बड़ी सीमा / खतरा कौन-सी है?</div>
+        <div class="opts">
+          <button class="opt" data-key="a">बहुत धीमा होना</button>
+          <button class="opt" data-key="b">आत्मविश्वास से गलत जानकारी देना (hallucination)</button>
+          <button class="opt" data-key="c">सिर्फ अंग्रेज़ी जानना</button>
+          <button class="opt" data-key="d">internet के बिना चलना</button>
+        </div>
+      </div>
+      <div class="q-item" data-answer="b">
+        <div class="q">5. AI से सबसे अच्छा जवाब पाने के लिए क्या ज़रूरी है?</div>
+        <div class="opts">
+          <button class="opt" data-key="a">सिर्फ एक शब्द लिखना</button>
+          <button class="opt" data-key="b">साफ़ मकसद और पूरा context देना</button>
+          <button class="opt" data-key="c">हमेशा अंग्रेज़ी में लिखना</button>
+          <button class="opt" data-key="d">बहुत लंबा सवाल पूछना</button>
+        </div>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>AI · परिचय — एक शुरुआती guide</p>
+    <p>History · Features · Use-guide</p>
+  </div>
+</footer>
+
+<button id="toTop" aria-label="ऊपर जाएँ" title="ऊपर जाएँ">↑</button>
+
+<script>
+  // Staggered reveal on scroll
+  const els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          const idx = Array.prototype.indexOf.call(e.target.parentElement.children, e.target);
+          e.target.style.transitionDelay = Math.min(idx, 6) * 55 + 'ms';
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(el => io.observe(el));
+  } else {
+    els.forEach(el => el.classList.add('in'));
+  }
+
+  // Active nav highlight
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const sections = document.querySelectorAll('section[id]');
+  if ('IntersectionObserver' in window) {
+    const so = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(a => {
+            a.style.background = a.getAttribute('href') === '#' + e.target.id ? 'var(--terracotta-dim)' : '';
+            a.style.color = a.getAttribute('href') === '#' + e.target.id ? 'var(--terracotta)' : '';
+          });
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => so.observe(s));
+  }
+
+  /* ================= THEME TOGGLE ================= */
+  var root = document.documentElement;
+  var tBtn = document.getElementById('themeBtn');
+  function syncThemeBtn(){ tBtn.textContent = root.getAttribute('data-theme')==='dark' ? '☀' : '◐'; }
+  syncThemeBtn();
+  tBtn.addEventListener('click', function(){
+    var next = root.getAttribute('data-theme')==='dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try{ localStorage.setItem('ai-theme', next); }catch(e){}
+    syncThemeBtn();
+  });
+
+  /* ================= SCROLL PROGRESS + BACK TO TOP ================= */
+  var prog = document.getElementById('progress');
+  var toTop = document.getElementById('toTop');
+  function onScroll(){
+    var st = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    prog.style.width = (h>0 ? (st/h*100) : 0) + '%';
+    if(st > 700){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+  toTop.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+
+  /* ================= DIRECTORY COUNT (before counters run) ================= */
+  var dirCardsAll = document.querySelectorAll('#aiGrid .dir-card');
+  var statToolsEl = document.getElementById('statTools');
+  if(statToolsEl){ statToolsEl.setAttribute('data-count', dirCardsAll.length); }
+
+  /* ================= COUNTER ANIMATION ================= */
+  function animateCount(el){
+    var target = parseInt(el.getAttribute('data-count'),10) || 0;
+    var suffix = el.getAttribute('data-suffix') || '';
+    var dur = 1100, start = null;
+    function step(ts){
+      if(!start) start = ts;
+      var p = Math.min((ts-start)/dur, 1);
+      var val = Math.round((1-Math.pow(1-p,3)) * target);
+      el.textContent = val + suffix;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var statNums = document.querySelectorAll('.stat .n');
+  if('IntersectionObserver' in window){
+    var stio = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ animateCount(e.target); stio.unobserve(e.target); } });
+    }, {threshold:0.4});
+    statNums.forEach(function(s){ stio.observe(s); });
+  } else { statNums.forEach(animateCount); }
+
+  /* ================= HISTORY: MILESTONE TOGGLE ================= */
+  var MILESTONES = ['1956','1997','2012','2017','2022'];
+  var tlItems = document.querySelectorAll('.tl-item');
+  document.querySelectorAll('.toggle-row .chip-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.toggle-row .chip-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var only = btn.getAttribute('data-mode')==='milestones';
+      tlItems.forEach(function(it){
+        var yEl = it.querySelector('.tl-year');
+        var y = yEl ? yEl.textContent.trim() : '';
+        var isM = MILESTONES.indexOf(y) !== -1;
+        it.classList.toggle('dim', only && !isM);
+      });
+    });
+  });
+
+  /* ================= AI DIRECTORY FILTER ================= */
+  var grid = document.getElementById('aiGrid');
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.dir-card'));
+  var search = document.getElementById('aiSearch');
+  var noRes = document.getElementById('noResults');
+  var countLine = document.getElementById('aiCount');
+  var activeFilter = 'all';
+  function applyFilter(){
+    var q = (search.value || '').trim().toLowerCase();
+    var shown = 0;
+    cards.forEach(function(c){
+      var cat = c.getAttribute('data-cat');
+      var name = (c.getAttribute('data-name') || '').toLowerCase();
+      var okCat = activeFilter==='all' || cat===activeFilter || name.indexOf(activeFilter) !== -1;
+      var okQ = q==='' || name.indexOf(q) !== -1;
+      var show = okCat && okQ;
+      c.style.display = show ? '' : 'none';
+      if(show) shown++;
+    });
+    noRes.style.display = shown===0 ? 'block' : 'none';
+    countLine.textContent = shown + ' tools दिख रहे हैं' + (activeFilter==='all' ? '' : ' · category चुनी गई है');
+  }
+  document.querySelectorAll('#aiChips .chip-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('#aiChips .chip-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      activeFilter = btn.getAttribute('data-filter');
+      applyFilter();
+    });
+  });
+  search.addEventListener('input', applyFilter);
+  applyFilter();
+
+  /* ================= QUIZ ================= */
+  var quiz = document.getElementById('quizBox');
+  var qItems = quiz.querySelectorAll('.q-item');
+  var qResult = document.getElementById('quizResult');
+  var answered = 0, score = 0;
+  qItems.forEach(function(qi){
+    var correct = qi.getAttribute('data-answer');
+    qi.querySelectorAll('.opt').forEach(function(opt){
+      opt.addEventListener('click', function(){
+        if(qi.dataset.done) return;
+        qi.dataset.done = '1';
+        answered++;
+        var chosen = opt.getAttribute('data-key');
+        qi.querySelectorAll('.opt').forEach(function(o){
+          o.disabled = true;
+          if(o.getAttribute('data-key')===correct) o.classList.add('correct');
+        });
+        if(chosen===correct){ score++; } else { opt.classList.add('wrong'); }
+        if(answered === qItems.length){
+          qResult.textContent = 'आपका स्कोर: ' + score + ' / ' + qItems.length +
+            (score===qItems.length ? ' — बहुत बढ़िया, पूरा सही!' : score>=Math.ceil(qItems.length/2) ? ' — अच्छा किया!' : ' — ऊपर के sections दोबारा पढ़िए।');
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
