@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rajniware555-creator.github.io/ai-parichay/sitemap.xml
